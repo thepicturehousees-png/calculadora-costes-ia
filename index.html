@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Costes de APIs de IA 2026</title>
+  <style>
+    :root {
+      --bg: #0b0d14;
+      --card-bg: #141724;
+      --border: rgba(255, 255, 255, 0.12);
+      --accent: #D91E27;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --highlight: #FEF1D5;
+      --green: #34d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 2rem 1rem; line-height: 1.5; }
+    .container { max-width: 1050px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 2rem; }
+    h1 { font-size: 2rem; color: var(--highlight); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.02em; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; }
+    .calc-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem; }
+    .sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+    .slider-item { display: flex; flex-direction: column; gap: 0.5rem; }
+    .slider-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .slider-val { color: var(--highlight); }
+    input[type=range] { width: 100%; accent-color: var(--accent); }
+    .highlight-card { background: linear-gradient(135deg, rgba(217,30,39,0.2) 0%, rgba(20,23,36,0.95) 100%); border: 2px solid var(--accent); border-radius: 0.85rem; padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .highlight-card h3 { font-size: 1.3rem; color: var(--highlight); }
+    .highlight-price { font-size: 2rem; font-weight: 800; color: var(--highlight); text-align: right; }
+    .badge { font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 4px; text-transform: uppercase; }
+    .badge-win { background: var(--accent); color: white; }
+    .badge-save { background: rgba(52, 211, 153, 0.15); color: var(--green); }
+    .grid-models { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .model-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .model-name { font-size: 1rem; font-weight: 700; color: var(--text); margin: 0.35rem 0; }
+    .model-desc { font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem; }
+    .model-price { font-size: 1.35rem; font-weight: 800; text-align: right; }
+    footer { text-align: center; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 2rem; }
+    footer a { color: var(--highlight); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Calculadora de Costes de IA 2026</h1>
+      <p class="subtitle">Compara el coste mensual real de 10 APIs de IA frente a la tarifa plana de ChatGPT Plus</p>
+    </header>
+
+    <div class="calc-box">
+      <div class="sliders">
+        <div class="slider-item">
+          <div class="slider-header">
+            <span>Consultas / Dia</span>
+            <span id="lbl-prompts" class="slider-val">30 consultas</span>
+          </div>
+          <input type="range" id="in-prompts" min="5" max="500" step="5" value="30" />
+        </div>
+        <div class="slider-item">
+          <div class="slider-header">
+            <span>Tokens por Consulta</span>
+            <span id="lbl-tokens" class="slider-val">1.000 tokens</span>
+          </div>
+          <input type="range" id="in-tokens" min="200" max="8000" step="100" value="1000" />
+        </div>
+        <div class="slider-item">
+          <div class="slider-header">
+            <span>Personas en Equipo</span>
+            <span id="lbl-users" class="slider-val">1 persona</span>
+          </div>
+          <input type="range" id="in-users" min="1" max="50" step="1" value="1" />
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div>
+          <span class="badge badge-win">Opcion Mas Economica en Razonamiento</span>
+          <h3>DeepSeek R1 (API Oficial)</h3>
+          <p style="font-size:0.85rem; color:#cbd5e1;">Razonamiento avanzado ($0.55 in / $2.19 out por millon de tokens)</p>
+        </div>
+        <div>
+          <div class="highlight-price" id="res-deepseek">1,49 €</div>
+          <span class="badge badge-save" id="save-pct">Ahorras 93% vs Plus</span>
+        </div>
+      </div>
+
+      <div class="grid-models">
+        <div class="model-card">
+          <span class="badge" style="background:rgba(239,68,68,0.15); color:#f87171;">Tarifa Fija</span>
+          <div class="model-name">ChatGPT Plus</div>
+          <div class="model-desc">Suscripcion individual fija de $20 + IVA.</div>
+          <div class="model-price" id="res-chatgpt" style="color:#cbd5e1;">22,50 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge badge-save">Ultra Rapido</span>
+          <div class="model-name">Gemini 2.0 Flash</div>
+          <div class="model-desc">Google ($0.10 in / $0.40 out M tokens).</div>
+          <div class="model-price" id="res-gemini" style="color:#38bdf8;">0,25 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge badge-save">Ligero</span>
+          <div class="model-name">GPT-4o Mini</div>
+          <div class="model-desc">OpenAI ($0.15 in / $0.60 out M tokens).</div>
+          <div class="model-price" id="res-gpt4omini" style="color:#60a5fa;">0,38 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge badge-save">Chat General</span>
+          <div class="model-name">DeepSeek V3</div>
+          <div class="model-desc">DeepSeek ($0.27 in / $1.10 out M tokens).</div>
+          <div class="model-price" id="res-deepseekv3" style="color:#f87171;">0,68 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge badge-save">Razonamiento STEM</span>
+          <div class="model-name">OpenAI o3-mini</div>
+          <div class="model-desc">OpenAI ($1.10 in / $4.40 out M tokens).</div>
+          <div class="model-price" id="res-o3mini" style="color:#c084fc;">2,10 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge badge-save">Redaccion Agil</span>
+          <div class="model-name">Claude 3.5 Haiku</div>
+          <div class="model-desc">Anthropic ($0.80 in / $4.00 out M tokens).</div>
+          <div class="model-price" id="res-haiku" style="color:#fb923c;">1,85 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge" style="background:rgba(99,102,241,0.15); color:#a5b4fc;">Europa RGPD</span>
+          <div class="model-name">Mistral Large 2</div>
+          <div class="model-desc">Mistral AI ($2.00 in / $6.00 out M tokens).</div>
+          <div class="model-price" id="res-mistral" style="color:#818cf8;">3,72 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge" style="background:rgba(59,130,246,0.15); color:#93c5fd;">Multimodal</span>
+          <div class="model-name">OpenAI GPT-4o</div>
+          <div class="model-desc">OpenAI ($2.50 in / $10.00 out M tokens).</div>
+          <div class="model-price" id="res-gpt4o" style="color:#93c5fd;">5,58 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge" style="background:rgba(245,158,11,0.15); color:#fde68a;">Alta Precision</span>
+          <div class="model-name">Claude 3.7 Sonnet</div>
+          <div class="model-desc">Anthropic ($3.00 in / $15.00 out M tokens).</div>
+          <div class="model-price" id="res-claude" style="color:#fde68a;">8,10 €</div>
+        </div>
+
+        <div class="model-card">
+          <span class="badge" style="background:rgba(20,184,166,0.15); color:#5eead4;">Local Privado</span>
+          <div class="model-name">Ollama (Llama 3.3)</div>
+          <div class="model-desc">Software libre. Solo coste electrico GPU.</div>
+          <div class="model-price" id="res-ollama" style="color:#5eead4;">1,20 €</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Desarrollado y mantenido por <a href="https://everywhereia.com/" target="_blank" rel="noopener noreferrer">EverywhereIA</a> — Inteligencia Artificial Explicada con Rigor Tecnico.</p>
+    </footer>
+  </div>
+
+  <script>
+    const inPrompts = document.getElementById('in-prompts');
+    const inTokens = document.getElementById('in-tokens');
+    const inUsers = document.getElementById('in-users');
+
+    const lblPrompts = document.getElementById('lbl-prompts');
+    const lblTokens = document.getElementById('lbl-tokens');
+    const lblUsers = document.getElementById('lbl-users');
+
+    const resDeepseek = document.getElementById('res-deepseek');
+    const savePct = document.getElementById('save-pct');
+    const resChatgpt = document.getElementById('res-chatgpt');
+    const resGemini = document.getElementById('res-gemini');
+    const resGpt4omini = document.getElementById('res-gpt4omini');
+    const resDeepseekv3 = document.getElementById('res-deepseekv3');
+    const resO3mini = document.getElementById('res-o3mini');
+    const resHaiku = document.getElementById('res-haiku');
+    const resMistral = document.getElementById('res-mistral');
+    const resGpt4o = document.getElementById('res-gpt4o');
+    const resClaude = document.getElementById('res-claude');
+    const resOllama = document.getElementById('res-ollama');
+
+    const USD_TO_EUR = 0.93;
+
+    function fmt(n) { return n.toFixed(2).replace('.', ',') + ' €'; }
+
+    function update() {
+      const p = parseInt(inPrompts.value, 10);
+      const t = parseInt(inTokens.value, 10);
+      const u = parseInt(inUsers.value, 10);
+
+      lblPrompts.textContent = p + ' consultas';
+      lblTokens.textContent = t.toLocaleString('es-ES') + ' tokens';
+      lblUsers.textContent = u === 1 ? '1 persona' : u + ' personas';
+
+      const totalTokens = p * t * 30 * u;
+      const mTokens = totalTokens / 1000000;
+      const inM = mTokens * 0.65;
+      const outM = mTokens * 0.35;
+
+      const chatgpt = 22.50 * u;
+      resChatgpt.textContent = fmt(chatgpt);
+
+      const dUSD = (inM * 0.55) + (outM * 2.19);
+      const dEUR = Math.max(0.10, dUSD * USD_TO_EUR);
+      resDeepseek.textContent = fmt(dEUR);
+
+      const save = chatgpt - dEUR;
+      const pct = Math.round((save / chatgpt) * 100);
+      savePct.textContent = save > 0 ? 'Ahorras ' + fmt(save) + '/mes (-' + pct + '%)' : 'Mayor volumen que tarifa fija';
+
+      resGemini.textContent = fmt(Math.max(0.05, ((inM * 0.10) + (outM * 0.40)) * USD_TO_EUR));
+      resGpt4omini.textContent = fmt(Math.max(0.08, ((inM * 0.15) + (outM * 0.60)) * USD_TO_EUR));
+      resDeepseekv3.textContent = fmt(Math.max(0.09, ((inM * 0.27) + (outM * 1.10)) * USD_TO_EUR));
+      resO3mini.textContent = fmt(Math.max(0.15, ((inM * 1.10) + (outM * 4.40)) * USD_TO_EUR));
+      resHaiku.textContent = fmt(Math.max(0.12, ((inM * 0.80) + (outM * 4.00)) * USD_TO_EUR));
+      resMistral.textContent = fmt(Math.max(0.20, ((inM * 2.00) + (outM * 6.00)) * USD_TO_EUR));
+      resGpt4o.textContent = fmt(Math.max(0.25, ((inM * 2.50) + (outM * 10.00)) * USD_TO_EUR));
+      resClaude.textContent = fmt(Math.max(0.30, ((inM * 3.00) + (outM * 15.00)) * USD_TO_EUR));
+
+      const kwh = Math.min(8, Math.max(0.5, p * 0.05)) * 30 * 0.25;
+      resOllama.textContent = fmt(Math.max(0.80, kwh * 0.16 * u));
+    }
+
+    inPrompts.addEventListener('input', update);
+    inTokens.addEventListener('input', update);
+    inUsers.addEventListener('input', update);
+    update();
+  </script>
+</body>
+</html>
